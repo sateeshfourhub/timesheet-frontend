@@ -13,7 +13,7 @@ export const deleteEntry = (id) =>
   client.delete(`/time-entries/${id}`)
 
 export const submitWeek = (startDate, endDate) =>
-  client.post('/timesheets/submit', null, {
+  client.post('/timesheets/submit', {}, {
     params: { start_date: startDate, end_date: endDate },
   }).then(r => r.data)
 
