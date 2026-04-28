@@ -2,6 +2,8 @@ import client from './client'
 
 export const listUsers = () => client.get('/admin/users').then(r => r.data)
 
+export const listCompanies = () => client.get('/admin/companies').then(r => r.data)
+
 export const createUser = (data) => client.post('/admin/users', data).then(r => r.data)
 
 export const updateUser = (userId, data) =>

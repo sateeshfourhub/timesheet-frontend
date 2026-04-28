@@ -42,11 +42,17 @@ export default function WeeklyTimesheetView() {
   const queryClient = useQueryClient()
   const { user } = useAuth()
 
+  const FUTURE_WEEKS_LIMIT = 4
+
   const isAdmin = user?.role === 'admin' || user?.is_superuser
   const canGoBack = isAdmin || weekOffset > -1
-  const canGoForward = isAdmin || user?.future_time_log_enabled || weekOffset < 0
+  const canGoForward = isAdmin
+    || weekOffset < 0
+    || (user?.future_time_log_enabled && weekOffset < FUTURE_WEEKS_LIMIT)
   const isWeekLocked = !isAdmin && (
-    weekOffset < -1 || (weekOffset > 0 && !user?.future_time_log_enabled)
+    weekOffset < -1
+    || (weekOffset > 0 && !user?.future_time_log_enabled)
+    || (weekOffset > FUTURE_WEEKS_LIMIT)
   )
 
   const showToast = (msg, type = 'success') => {
@@ -158,7 +164,11 @@ export default function WeeklyTimesheetView() {
         <div className="text-center">
           <p className="text-sm font-semibold text-gray-900">{weekLabel}</p>
           {isWeekLocked && (
-            <p className="text-xs text-amber-600 mt-0.5">Locked — contact admin to edit</p>
+            <p className="text-xs text-amber-600 mt-0.5">
+              {weekOffset > FUTURE_WEEKS_LIMIT
+                ? `Locked — max ${FUTURE_WEEKS_LIMIT} weeks ahead allowed`
+                : 'Locked — contact admin to edit'}
+            </p>
           )}
           {weekOffset !== 0 && !isWeekLocked && (
             <button onClick={() => setWeekOffset(0)} className="text-xs text-blue-500 hover:underline mt-0.5">

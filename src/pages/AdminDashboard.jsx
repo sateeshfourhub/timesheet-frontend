@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { listUsers, createUser, updateUser, batchFutureAccess } from '../api/admin'
+import { listUsers, listCompanies, createUser, updateUser, batchFutureAccess } from '../api/admin'
+import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 
 function RoleBadge({ role }) {
@@ -32,8 +33,8 @@ function Toggle({ checked, onChange, disabled }) {
   )
 }
 
-function AddUserModal({ onClose, onSave }) {
-  const [form, setForm] = useState({ full_name: '', email: '', password: '', role: 'employee' })
+function AddUserModal({ onClose, onSave, isSuperuser, companies = [] }) {
+  const [form, setForm] = useState({ full_name: '', email: '', password: '', role: 'employee', company_id: '' })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
@@ -41,10 +42,16 @@ function AddUserModal({ onClose, onSave }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (isSuperuser && !form.company_id) {
+      setError('Please select a company')
+      return
+    }
     setSaving(true)
     setError('')
     try {
-      await onSave(form)
+      const payload = { ...form }
+      if (!isSuperuser) delete payload.company_id
+      await onSave(payload)
       onClose()
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to create user')
@@ -59,6 +66,22 @@ function AddUserModal({ onClose, onSave }) {
         <h2 className="text-lg font-bold text-gray-900 mb-4">Add Employee</h2>
         {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg mb-3">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-3">
+          {isSuperuser && (
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Company</label>
+              <select
+                value={form.company_id}
+                onChange={set('company_id')}
+                required
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">— Select company —</option>
+                {companies.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
           {[
             { k: 'full_name', label: 'Full Name', type: 'text' },
             { k: 'email', label: 'Email', type: 'email' },
@@ -112,10 +135,18 @@ export default function AdminDashboard() {
   const [selected, setSelected] = useState(new Set())
   const [showAdd, setShowAdd] = useState(false)
   const qc = useQueryClient()
+  const { user: currentUser } = useAuth()
+  const isSuperuser = currentUser?.is_superuser === true
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: ['admin-users'],
     queryFn: listUsers,
+  })
+
+  const { data: companies = [] } = useQuery({
+    queryKey: ['admin-companies'],
+    queryFn: listCompanies,
+    enabled: isSuperuser,
   })
 
   const refresh = () => qc.invalidateQueries({ queryKey: ['admin-users'] })
@@ -207,6 +238,7 @@ export default function AdminDashboard() {
               </th>
               <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">Name</th>
               <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">Email</th>
+              <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">Company</th>
               <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">Role</th>
               <th className="text-center text-xs font-semibold text-gray-500 px-4 py-3">Future Access</th>
               <th className="text-center text-xs font-semibold text-gray-500 px-4 py-3">Active</th>
@@ -238,6 +270,7 @@ export default function AdminDashboard() {
                   </div>
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-500">{user.email}</td>
+                <td className="px-4 py-3 text-sm text-gray-500">{user.company_name || '—'}</td>
                 <td className="px-4 py-3">
                   <RoleBadge role={user.role} />
                 </td>
@@ -281,6 +314,8 @@ export default function AdminDashboard() {
         <AddUserModal
           onClose={() => setShowAdd(false)}
           onSave={(data) => mutCreate.mutateAsync(data)}
+          isSuperuser={isSuperuser}
+          companies={companies}
         />
       )}
     </Layout>
