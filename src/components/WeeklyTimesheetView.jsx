@@ -55,12 +55,21 @@ export default function WeeklyTimesheetView() {
   }
 
   const handleSubmitWeek = async () => {
+    if (completedDays === 0) {
+      showToast('No completed entries this week. Add your hours first.', 'error')
+      return
+    }
     setSubmitting(true)
     try {
       const result = await submitWeek(startDate, endDate)
       showToast(`Your week timesheet has been successfully submitted! ${result.days_logged} day${result.days_logged !== 1 ? 's' : ''} · ${result.net_hours} net worked.`)
     } catch (err) {
-      showToast(err.response?.data?.detail || 'Submission failed', 'error')
+      const msg =
+        err.response?.data?.detail ||
+        err.response?.data?.message ||
+        err.message ||
+        'Submission failed'
+      showToast(msg, 'error')
     } finally {
       setSubmitting(false)
     }
