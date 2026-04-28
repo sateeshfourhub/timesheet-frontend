@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { getWeekEntries, createEntry, updateEntry, deleteEntry, submitWeek } from '../api/timeEntries'
+import { getWeekEntries, createEntry, updateEntry, deleteEntry, submitWeek, getSubmissionStatus } from '../api/timeEntries'
 import { useAuth } from '../context/AuthContext'
 import ClockDial from './ClockDial'
 import TimeEntryModal from './TimeEntryModal'
@@ -55,14 +55,19 @@ export default function WeeklyTimesheetView() {
   }
 
   const handleSubmitWeek = async () => {
+    if (isSubmitted) {
+      showToast('You have already submitted your timesheet for this week.', 'error')
+      return
+    }
     if (completedDays === 0) {
-      showToast('No completed entries this week. Add your hours first.', 'error')
+      showToast('No completed entries this week. Log your hours first.', 'error')
       return
     }
     setSubmitting(true)
     try {
       const result = await submitWeek(startDate, endDate)
       showToast(`Your week timesheet has been successfully submitted! ${result.days_logged} day${result.days_logged !== 1 ? 's' : ''} · ${result.net_hours} net worked.`)
+      queryClient.invalidateQueries({ queryKey: ['submission-status', startDate] })
     } catch (err) {
       const msg =
         err.response?.data?.detail ||
@@ -86,6 +91,13 @@ export default function WeeklyTimesheetView() {
     queryKey: ['week-entries', startDate],
     queryFn: () => getWeekEntries(startDate, endDate),
   })
+
+  const { data: submissionStatus } = useQuery({
+    queryKey: ['submission-status', startDate],
+    queryFn: () => getSubmissionStatus(startDate),
+  })
+
+  const isSubmitted = submissionStatus?.submitted === true
 
   const days = getWeekDays(monday)
 
@@ -209,13 +221,19 @@ export default function WeeklyTimesheetView() {
         <p className="text-sm text-gray-400">
           {completedDays} day{completedDays !== 1 ? 's' : ''} logged this week
         </p>
-        <button
-          onClick={handleSubmitWeek}
-          disabled={submitting || completedDays === 0}
-          className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
-        >
-          {submitting ? 'Submitting…' : 'Submit Week →'}
-        </button>
+        {isSubmitted ? (
+          <span className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-green-50 text-green-700 border border-green-200">
+            ✓ Submitted
+          </span>
+        ) : (
+          <button
+            onClick={handleSubmitWeek}
+            disabled={submitting || completedDays === 0}
+            className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+          >
+            {submitting ? 'Submitting…' : 'Submit Week →'}
+          </button>
+        )}
       </div>
 
       {/* Weekly summary */}

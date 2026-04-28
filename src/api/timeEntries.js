@@ -16,3 +16,8 @@ export const submitWeek = (startDate, endDate) =>
   client.post('/timesheets/submit', null, {
     params: { start_date: startDate, end_date: endDate },
   }).then(r => r.data)
+
+export const getSubmissionStatus = (weekStart) =>
+  client.get('/timesheets/submission-status', {
+    params: { week_start: weekStart },
+  }).then(r => r.data)
