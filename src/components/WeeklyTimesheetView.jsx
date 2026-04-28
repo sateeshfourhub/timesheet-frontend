@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getWeekEntries, createEntry, updateEntry, deleteEntry, submitWeek } from '../api/timeEntries'
+import { useAuth } from '../context/AuthContext'
 import ClockDial from './ClockDial'
 import TimeEntryModal from './TimeEntryModal'
 
@@ -39,6 +40,14 @@ export default function WeeklyTimesheetView() {
   const [submitting, setSubmitting] = useState(false)
   const [toast, setToast] = useState(null)
   const queryClient = useQueryClient()
+  const { user } = useAuth()
+
+  const isAdmin = user?.role === 'admin' || user?.is_superuser
+  const canGoBack = isAdmin || weekOffset > -1
+  const canGoForward = isAdmin || user?.future_time_log_enabled || weekOffset < 0
+  const isWeekLocked = !isAdmin && (
+    weekOffset < -1 || (weekOffset > 0 && !user?.future_time_log_enabled)
+  )
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type })
@@ -119,22 +128,27 @@ export default function WeeklyTimesheetView() {
       {/* Week navigation */}
       <div className="flex items-center justify-between mb-6">
         <button
-          onClick={() => setWeekOffset(w => w - 1)}
-          className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
+          onClick={() => canGoBack && setWeekOffset(w => w - 1)}
+          disabled={!canGoBack}
+          className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
           ‹ Prev
         </button>
         <div className="text-center">
           <p className="text-sm font-semibold text-gray-900">{weekLabel}</p>
-          {weekOffset !== 0 && (
+          {isWeekLocked && (
+            <p className="text-xs text-amber-600 mt-0.5">Locked — contact admin to edit</p>
+          )}
+          {weekOffset !== 0 && !isWeekLocked && (
             <button onClick={() => setWeekOffset(0)} className="text-xs text-blue-500 hover:underline mt-0.5">
               Back to this week
             </button>
           )}
         </div>
         <button
-          onClick={() => setWeekOffset(w => w + 1)}
-          className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
+          onClick={() => canGoForward && setWeekOffset(w => w + 1)}
+          disabled={!canGoForward}
+          className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
           Next ›
         </button>
@@ -148,8 +162,9 @@ export default function WeeklyTimesheetView() {
           return (
             <button
               key={day.date}
-              onClick={() => setSelectedDay(day)}
-              className={`flex flex-col items-center gap-1 py-3 px-1 rounded-xl border transition-all hover:shadow-md active:scale-95 ${
+              onClick={() => !isWeekLocked && setSelectedDay(day)}
+              disabled={isWeekLocked}
+              className={`flex flex-col items-center gap-1 py-3 px-1 rounded-xl border transition-all ${isWeekLocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md active:scale-95'} ${
                 day.isToday
                   ? 'border-blue-200 bg-blue-50'
                   : day.isWeekend

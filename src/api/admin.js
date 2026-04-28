@@ -1,0 +1,11 @@
+import client from './client'
+
+export const listUsers = () => client.get('/admin/users').then(r => r.data)
+
+export const createUser = (data) => client.post('/admin/users', data).then(r => r.data)
+
+export const updateUser = (userId, data) =>
+  client.patch(`/admin/users/${userId}`, data).then(r => r.data)
+
+export const batchFutureAccess = (userIds, enabled) =>
+  client.post('/admin/users/batch-future-access', { user_ids: userIds, enabled }).then(r => r.data)
