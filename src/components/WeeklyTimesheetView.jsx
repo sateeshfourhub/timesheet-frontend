@@ -58,7 +58,7 @@ export default function WeeklyTimesheetView() {
     setSubmitting(true)
     try {
       const result = await submitWeek(startDate, endDate)
-      showToast(`Timesheet submitted — ${result.net_hours} net. Confirmation sent to ${result.emails_sent_to.join(' & ')}.`)
+      showToast(`Your week timesheet has been successfully submitted! ${result.days_logged} day${result.days_logged !== 1 ? 's' : ''} · ${result.net_hours} net worked.`)
     } catch (err) {
       showToast(err.response?.data?.detail || 'Submission failed', 'error')
     } finally {
