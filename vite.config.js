@@ -6,8 +6,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'https://timesheet-backend-production-9d7d.up.railway.app',
         changeOrigin: true,
+        secure: true,
       },
     },
   },
