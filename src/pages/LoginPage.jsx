@@ -29,7 +29,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Fourhub Timesheet</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">TimekeepingHub</h1>
         <p className="text-sm text-gray-500 mb-6">Sign in to your account</p>
 
         {error && (
