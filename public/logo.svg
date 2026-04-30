@@ -1,0 +1,27 @@
+<svg width="168" height="216" viewBox="0 0 42 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pin-gradient" x1="0" y1="0" x2="42" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+  <!-- Location pin -->
+  <path d="M21 1C10.0 1 1 10.0 1 21C1 35.0 21 53 21 53C21 53 41 35.0 41 21C41 10.0 32.0 1 21 1Z" fill="url(#pin-gradient)"/>
+  <!-- White clock face -->
+  <circle cx="21" cy="21" r="13" fill="white"/>
+  <!-- Tick marks at 12, 3, 6, 9 -->
+  <line x1="21" y1="9.5" x2="21" y2="12" stroke="#BFDBFE" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="32.5" y1="21" x2="30" y2="21" stroke="#BFDBFE" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="21" y1="32.5" x2="21" y2="30" stroke="#BFDBFE" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="9.5" y1="21" x2="12" y2="21" stroke="#BFDBFE" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Hour hand (pointing to 12) -->
+  <line x1="21" y1="21" x2="21" y2="13.5" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Minute hand (pointing to 3) -->
+  <line x1="21" y1="21" x2="27.5" y2="21" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/>
+  <!-- Center dot -->
+  <circle cx="21" cy="21" r="2" fill="#2563EB"/>
+  <!-- Hub nodes -->
+  <circle cx="21" cy="3.5" r="2.5" fill="#93C5FD"/>
+  <circle cx="38.5" cy="21" r="2.5" fill="#93C5FD"/>
+  <circle cx="3.5" cy="21" r="2.5" fill="#93C5FD"/>
+</svg>
