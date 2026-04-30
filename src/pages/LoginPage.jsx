@@ -27,54 +27,79 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <div className="flex items-center gap-3 mb-2">
-          <img src="/logo-192.png" alt="TimekeepingHub" className="h-10 w-auto" />
-          <h1 className="text-2xl font-bold text-gray-900">TimekeepingHub</h1>
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #BFDBFE 100%)' }}
+    >
+      <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden">
+
+        {/* Branded header */}
+        <div
+          className="px-8 py-8 flex flex-col items-center"
+          style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)' }}
+        >
+          <img src="/logo-192.png" alt="TimekeepingHub" className="h-16 w-auto mb-3 drop-shadow-lg" />
+          <h1 className="text-2xl font-bold text-white tracking-tight">TimekeepingHub</h1>
+          <p className="text-blue-200 text-sm mt-1">Sign in to your account</p>
         </div>
-        <p className="text-sm text-gray-500 mb-6">Sign in to your account</p>
 
-        {error && (
-          <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-4 text-sm">{error}</div>
-        )}
+        {/* Form */}
+        <div className="px-8 py-8">
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-5 text-sm">
+              {error}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
-          >
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-semibold mb-1.5" style={{ color: '#1E3A8A' }}>
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="you@company.com"
+                className="w-full border border-blue-200 rounded-lg px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all"
+                style={{ '--tw-ring-color': '#2563EB' }}
+                onFocus={e => e.target.style.borderColor = '#2563EB'}
+                onBlur={e => e.target.style.borderColor = '#BFDBFE'}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold mb-1.5" style={{ color: '#1E3A8A' }}>
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+                className="w-full border border-blue-200 rounded-lg px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all"
+                onFocus={e => e.target.style.borderColor = '#2563EB'}
+                onBlur={e => e.target.style.borderColor = '#BFDBFE'}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full text-white py-2.5 rounded-lg font-semibold transition-opacity disabled:opacity-50 mt-2"
+              style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)' }}
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
 
-        <p className="mt-4 text-sm text-gray-600 text-center">
-          New company?{' '}
-          <Link to="/register" className="text-blue-600 hover:underline">
-            Create account
-          </Link>
-        </p>
+          <p className="mt-6 text-sm text-gray-500 text-center">
+            New company?{' '}
+            <Link to="/register" className="font-semibold hover:underline" style={{ color: '#2563EB' }}>
+              Create account
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )
