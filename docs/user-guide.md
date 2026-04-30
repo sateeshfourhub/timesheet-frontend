@@ -20,6 +20,8 @@ If you are a new employee, your admin may create your account for you. If you ne
 
 > If your admin created your account, they will give you your email and password directly. Go to https://timekeepinghub.com/login to sign in.
 
+![Register page](screenshots/02-register.png)
+
 ---
 
 ## 2. Signing In
@@ -29,6 +31,8 @@ If you are a new employee, your admin may create your account for you. If you ne
 3. Click **Sign In**
 
 You will be taken to your Weekly Timesheet dashboard.
+
+![Login page](screenshots/01-login.png)
 
 ---
 
@@ -41,6 +45,8 @@ After signing in you will see the **Weekly Timesheet** screen. It shows the curr
 - **Today** is highlighted in blue
 - **Weekend days** (Sat, Sun) have a grey background
 - Each day shows a clock dial that fills up as you log hours
+
+![Weekly timesheet dashboard](screenshots/03-dashboard.png)
 
 ### Adding Hours for a Day
 
@@ -58,6 +64,8 @@ After signing in you will see the **Weekly Timesheet** screen. It shows the curr
 8. Click **Save**
 
 The day card will update immediately to show your clock-in and clock-out times.
+
+![Time entry modal](screenshots/04-time-entry-modal.png)
 
 ### Editing or Deleting an Entry
 
