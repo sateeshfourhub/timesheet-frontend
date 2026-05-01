@@ -104,7 +104,7 @@ const html = `<!DOCTYPE html>
   <h2 class="section"><span class="num">1</span>Creating Your Account</h2>
   <p>If you are a new employee, your admin may create your account for you. If you need to register yourself:</p>
   <ol>
-    <li>Go to <strong>https://timekeepinghub.com/register</strong></li>
+    <li>Go to <strong>https://timekeepinghub.com/#/register</strong></li>
     <li>Fill in the registration form:
       <ul>
         <li><strong>Your Full Name</strong> — your real name</li>
@@ -117,7 +117,7 @@ const html = `<!DOCTYPE html>
     <li>Click <strong>Create Account</strong></li>
     <li>You will be logged in automatically and taken to your dashboard</li>
   </ol>
-  <div class="tip">If your admin created your account, they will give you your email and password directly. Go to https://timekeepinghub.com/login to sign in.</div>
+  <div class="tip">If your admin created your account, they will give you your email and password directly. Go to https://timekeepinghub.com/#/login to sign in.</div>
   <div class="screenshot">
     <img src="${img('02-register.png')}" alt="Register page"/>
     <div class="caption">The registration page — fill in all fields and click Create Account</div>
@@ -128,7 +128,7 @@ const html = `<!DOCTYPE html>
 <div class="page">
   <h2 class="section"><span class="num">2</span>Signing In</h2>
   <ol>
-    <li>Go to <strong>https://timekeepinghub.com/login</strong></li>
+    <li>Go to <strong>https://timekeepinghub.com/#/login</strong></li>
     <li>Enter your <strong>Email</strong> and <strong>Password</strong></li>
     <li>Click <strong>Sign In</strong></li>
   </ol>

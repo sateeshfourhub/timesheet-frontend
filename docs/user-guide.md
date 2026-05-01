@@ -8,7 +8,7 @@
 
 If you are a new employee, your admin may create your account for you. If you need to register yourself:
 
-1. Go to https://timekeepinghub.com/register
+1. Go to https://timekeepinghub.com/#/register
 2. Fill in the form:
    - **Your Full Name** — your real name
    - **Email** — your work email address
@@ -18,7 +18,7 @@ If you are a new employee, your admin may create your account for you. If you ne
 3. Click **Create Account**
 4. You will be logged in automatically and taken to your dashboard
 
-> If your admin created your account, they will give you your email and password directly. Go to https://timekeepinghub.com/login to sign in.
+> If your admin created your account, they will give you your email and password directly. Go to https://timekeepinghub.com/#/login to sign in.
 
 ![Register page](screenshots/02-register.png)
 
@@ -26,7 +26,7 @@ If you are a new employee, your admin may create your account for you. If you ne
 
 ## 2. Signing In
 
-1. Go to https://timekeepinghub.com/login
+1. Go to https://timekeepinghub.com/#/login
 2. Enter your **Email** and **Password**
 3. Click **Sign In**
 
