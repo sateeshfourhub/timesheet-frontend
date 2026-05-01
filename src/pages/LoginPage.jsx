@@ -94,7 +94,10 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-6 text-sm text-gray-500 text-center">
-            Contact your admin if you don't have login credentials.
+            New here?{' '}
+            <Link to="/register" className="font-semibold hover:underline" style={{ color: '#2563EB' }}>
+              Create account
+            </Link>
           </p>
         </div>
       </div>
