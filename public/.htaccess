@@ -1,6 +1,15 @@
 RewriteEngine On
+
+# Redirect www → apex (no effect on subdomains like dev.timekeepinghub.com)
+RewriteCond %{HTTP_HOST} ^www\.timekeepinghub\.com$ [NC]
+RewriteRule ^(.*)$ https://timekeepinghub.com/$1 [R=301,L]
+
+# SPA fallback via mod_rewrite
 RewriteBase /
 RewriteRule ^index\.html$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.html [L]
+
+# Belt-and-suspenders: if mod_rewrite doesn't fire, serve index.html for any 404
+ErrorDocument 404 /index.html

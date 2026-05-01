@@ -8,8 +8,10 @@ const FIELDS = [
   { field: 'email', label: 'Email', type: 'email', placeholder: 'you@company.com' },
   { field: 'password', label: 'Password', type: 'password', placeholder: '••••••••' },
   { field: 'company_name', label: 'Company Name', type: 'text', placeholder: 'Acme Inc.' },
-  { field: 'company_slug', label: 'Company Slug', type: 'text', placeholder: 'acme-corp' },
 ]
+
+const toSlug = (name) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -24,7 +26,14 @@ export default function RegisterPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
+  const set = (field) => (e) => {
+    const value = e.target.value
+    setForm((f) => {
+      const updated = { ...f, [field]: value }
+      if (field === 'company_name') updated.company_slug = toSlug(value)
+      return updated
+    })
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -60,6 +69,10 @@ export default function RegisterPage() {
 
         {/* Form */}
         <div className="px-8 py-8">
+          <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg mb-5 text-sm">
+            This page is for setting up a <strong>new company account</strong>. If you are an employee, contact your admin for your login credentials.
+          </div>
+
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-5 text-sm">
               {error}
