@@ -1,30 +1,42 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { employeeRegister } from '../api/auth'
+import { register as registerApi } from '../api/auth'
 
-export default function RegisterPage() {
-  const [form, setForm] = useState({ full_name: '', email: '', password: '', company_slug: '' })
+const toSlug = (name) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
+export default function NewCompanyPage() {
+  const [form, setForm] = useState({
+    full_name: '', email: '', password: '', company_name: '', company_slug: '', super_admin_token: '',
+  })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
+  const set = (field) => (e) => {
+    const value = e.target.value
+    setForm((f) => {
+      const updated = { ...f, [field]: value }
+      if (field === 'company_name') updated.company_slug = toSlug(value)
+      return updated
+    })
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      const { access_token } = await employeeRegister(form)
+      const { access_token } = await registerApi(form)
       await login(access_token)
       navigate('/dashboard')
     } catch (err) {
       const status = err.response?.status
       setError(
-        status === 404
-          ? 'Company code not found. Double-check the code your admin gave you.'
+        status === 403
+          ? 'Invalid super admin token. Contact sateesh@fourhubtech.com to get a token.'
           : err.response?.data?.detail || 'Registration failed'
       )
     } finally {
@@ -45,12 +57,12 @@ export default function RegisterPage() {
         >
           <img src="/logo-192.png" alt="TimekeepingHub" className="h-16 w-auto mb-3 drop-shadow-lg" />
           <h1 className="text-2xl font-bold text-white tracking-tight">TimekeepingHub</h1>
-          <p className="text-blue-200 text-sm mt-1">Employee account setup</p>
+          <p className="text-blue-200 text-sm mt-1">Set up a new company</p>
         </div>
 
         <div className="px-8 py-8">
-          <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg mb-5 text-sm">
-            Ask your company admin for the <strong>Company Code</strong> before filling this form.
+          <div className="bg-amber-50 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg mb-5 text-sm">
+            <strong>Admin only.</strong> You need a super admin token to create a company account. Contact <strong>sateesh@fourhubtech.com</strong> to request one.
           </div>
 
           {error && (
@@ -60,11 +72,31 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* Super admin token — first, so it acts as a gate */}
+            <div>
+              <label className="block text-sm font-semibold mb-1.5" style={{ color: '#1E3A8A' }}>
+                Super Admin Token
+              </label>
+              <input
+                type="password"
+                value={form.super_admin_token}
+                onChange={set('super_admin_token')}
+                required
+                placeholder="Token provided by TimekeepingHub"
+                className="w-full border border-amber-300 rounded-lg px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all"
+                onFocus={e => e.target.style.borderColor = '#d97706'}
+                onBlur={e => e.target.style.borderColor = '#fcd34d'}
+              />
+            </div>
+
+            <hr className="border-blue-100" />
+
             {[
-              { field: 'full_name',    label: 'Your Full Name', type: 'text',     placeholder: 'John Smith' },
-              { field: 'email',        label: 'Email',          type: 'email',    placeholder: 'you@company.com' },
-              { field: 'password',     label: 'Password',       type: 'password', placeholder: '••••••••' },
-              { field: 'company_slug', label: 'Company Code',   type: 'text',     placeholder: 'e.g. fourhub-technologies' },
+              { field: 'full_name',    label: 'Your Full Name',  type: 'text',     placeholder: 'Jane Smith' },
+              { field: 'email',        label: 'Email',           type: 'email',    placeholder: 'admin@company.com' },
+              { field: 'password',     label: 'Password',        type: 'password', placeholder: '••••••••' },
+              { field: 'company_name', label: 'Company Name',    type: 'text',     placeholder: 'Acme Inc.' },
             ].map(({ field, label, type, placeholder }) => (
               <div key={field}>
                 <label className="block text-sm font-semibold mb-1.5" style={{ color: '#1E3A8A' }}>
@@ -82,13 +114,14 @@ export default function RegisterPage() {
                 />
               </div>
             ))}
+
             <button
               type="submit"
               disabled={loading}
               className="w-full text-white py-2.5 rounded-lg font-semibold transition-opacity disabled:opacity-50 mt-2"
               style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)' }}
             >
-              {loading ? 'Creating account...' : 'Create Employee Account'}
+              {loading ? 'Creating company...' : 'Create Company Account'}
             </button>
           </form>
 

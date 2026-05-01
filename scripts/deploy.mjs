@@ -35,7 +35,7 @@ if (!FTP_PASSWORD && fs.existsSync(envLocalPath)) {
   for (const line of fs.readFileSync(envLocalPath, 'utf8').split('\n')) {
     const [k, ...rest] = line.split('=')
     if (k?.trim() === 'FTP_PASSWORD') {
-      FTP_PASSWORD = rest.join('=').trim()
+      FTP_PASSWORD = rest.join('=').trim().replace(/^["']|["']$/g, '')
       break
     }
   }
