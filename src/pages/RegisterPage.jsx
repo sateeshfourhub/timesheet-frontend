@@ -69,6 +69,10 @@ export default function RegisterPage() {
 
         {/* Form */}
         <div className="px-8 py-8">
+          <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg mb-5 text-sm">
+            This page is for setting up a <strong>new company account</strong>. If you are an employee, contact your admin for your login credentials.
+          </div>
+
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-5 text-sm">
               {error}

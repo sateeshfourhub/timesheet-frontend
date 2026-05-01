@@ -4,23 +4,16 @@
 
 ---
 
-## 1. Creating Your Account
+## 1. Getting Access
 
-If you are a new employee, your admin may create your account for you. If you need to register yourself:
+Your company admin creates your account and gives you two things:
 
-1. Go to https://timekeepinghub.com/#/register
-2. Fill in the form:
-   - **Your Full Name** — your real name
-   - **Email** — your work email address
-   - **Password** — choose a strong password
-   - **Company Name** — your company's full name (e.g. Acme Inc.)
-   - **Company Slug** — a short URL-friendly identifier (e.g. `acme-corp`)
-3. Click **Create Account**
-4. You will be logged in automatically and taken to your dashboard
+- Your **email address** (used to log in)
+- Your **password**
 
-> If your admin created your account, they will give you your email and password directly. Go to https://timekeepinghub.com/#/login to sign in.
+Once you have those, go to **https://timekeepinghub.com/#/login** to sign in. You do not need to register — your admin handles that.
 
-![Register page](screenshots/02-register.png)
+> If you haven't received your login details, contact your company admin.
 
 ---
 
