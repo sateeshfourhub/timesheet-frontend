@@ -9,7 +9,11 @@
     "build:qa": "vite build --mode qa",
     "build:preview": "vite build --mode preview",
     "build:prod": "vite build --mode production",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:dev": "node scripts/deploy.mjs dev",
+    "deploy:qa": "node scripts/deploy.mjs qa",
+    "deploy:preview": "node scripts/deploy.mjs preview",
+    "deploy:prod": "node scripts/deploy.mjs prod"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.56.2",
@@ -21,6 +25,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
+    "basic-ftp": "^6.0.0",
     "postcss": "^8.4.47",
     "puppeteer": "^24.42.0",
     "tailwindcss": "^3.4.13",
