@@ -11,3 +11,9 @@ export const updateUser = (userId, data) =>
 
 export const batchFutureAccess = (userIds, enabled) =>
   client.post('/admin/users/batch-future-access', { user_ids: userIds, enabled }).then(r => r.data)
+
+export const listInviteTokens = () =>
+  client.get('/admin/invite-tokens').then(r => r.data)
+
+export const generateInviteToken = (company_name) =>
+  client.post('/admin/invite-tokens', { company_name }).then(r => r.data)
