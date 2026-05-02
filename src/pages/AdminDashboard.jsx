@@ -7,6 +7,8 @@ import {
 import { getSubmissionStatusForUser, unlockSubmission } from '../api/timeEntries'
 import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
+import WeeklyReport from '../components/admin/WeeklyReport'
+import MonthlyReport from '../components/admin/MonthlyReport'
 
 const toSlug = (name) =>
   name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') ?? ''
@@ -483,6 +485,32 @@ function EmployeeTimesheetModal({ employee, onClose }) {
   )
 }
 
+// ── Reports panel ────────────────────────────────────────────────────────────
+
+function ReportsPanel() {
+  const [reportTab, setReportTab] = useState('weekly')
+  return (
+    <div>
+      <div className="flex gap-4 mb-6 border-b border-gray-100">
+        {[{ id: 'weekly', label: 'Weekly' }, { id: 'monthly', label: 'Monthly' }].map(t => (
+          <button
+            key={t.id}
+            onClick={() => setReportTab(t.id)}
+            className="pb-2 text-sm font-semibold transition-colors"
+            style={{
+              color: reportTab === t.id ? '#1D4ED8' : '#6b7280',
+              borderBottom: reportTab === t.id ? '2px solid #1D4ED8' : '2px solid transparent',
+            }}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+      {reportTab === 'weekly' ? <WeeklyReport /> : <MonthlyReport />}
+    </div>
+  )
+}
+
 // ── Main admin dashboard ─────────────────────────────────────────────────────
 
 export default function AdminDashboard() {
@@ -547,6 +575,7 @@ export default function AdminDashboard() {
         <div className="flex gap-1 mt-4 border-b border-gray-200">
           {[
             { id: 'users', label: 'Team Members' },
+            { id: 'reports', label: 'Reports' },
             ...(isSuperuser ? [
               { id: 'companies', label: 'Companies' },
               { id: 'tokens', label: 'Invite Tokens' },
@@ -692,6 +721,9 @@ export default function AdminDashboard() {
           )}
         </>
       )}
+
+      {/* ── Reports tab ── */}
+      {tab === 'reports' && <ReportsPanel />}
 
       {/* ── Companies tab (superuser only) ── */}
       {tab === 'companies' && isSuperuser && <CompaniesPanel companies={companies} />}
