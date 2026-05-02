@@ -21,3 +21,13 @@ export const getSubmissionStatus = (weekStart) =>
   client.get('/timesheets/submission-status', {
     params: { week_start: weekStart },
   }).then(r => r.data)
+
+export const getSubmissionStatusForUser = (userId, weekStart) =>
+  client.get('/timesheets/submission-status', {
+    params: { user_id: userId, week_start: weekStart },
+  }).then(r => r.data)
+
+export const unlockSubmission = (userId, weekStart) =>
+  client.delete('/timesheets/submission', {
+    params: { user_id: userId, week_start: weekStart },
+  })
