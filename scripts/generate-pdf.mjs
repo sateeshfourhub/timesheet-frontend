@@ -75,12 +75,12 @@ const html = `<!DOCTYPE html>
 
 <!-- COVER -->
 <div class="cover">
-  <div class="label">Employee Guide · v1.0</div>
+  <div class="label">Employee Guide · v1.2</div>
   <h1>TimekeepingHub<br>Employee User Guide</h1>
-  <div class="sub">A step-by-step guide to logging your hours, submitting your weekly timesheet, and getting the most out of TimekeepingHub.</div>
+  <div class="sub">A step-by-step guide to creating your account, logging your hours, submitting your weekly timesheet, and getting the most out of TimekeepingHub.</div>
   <div class="meta">
     <div><strong>App URL</strong>timekeepinghub.com</div>
-    <div><strong>Version</strong>1.0 — May 2026</div>
+    <div><strong>Version</strong>1.2 — May 2026</div>
     <div><strong>Support</strong>Your company admin</div>
   </div>
 </div>
@@ -102,7 +102,7 @@ const html = `<!DOCTYPE html>
 <!-- SECTION 1 -->
 <div class="page">
   <h2 class="section"><span class="num">1</span>Creating Your Account</h2>
-  <p>If you are a new employee, your admin may create your account for you. If you need to register yourself:</p>
+  <p>Your company admin will give you a <strong>Company Code</strong> — a short identifier unique to your organisation (e.g. <code>fourhub-technologies</code>). Once you have the code:</p>
   <ol>
     <li>Go to <strong>https://timekeepinghub.com/#/register</strong></li>
     <li>Fill in the registration form:
@@ -110,17 +110,16 @@ const html = `<!DOCTYPE html>
         <li><strong>Your Full Name</strong> — your real name</li>
         <li><strong>Email</strong> — your work email address</li>
         <li><strong>Password</strong> — choose a strong password</li>
-        <li><strong>Company Name</strong> — your company's full name (e.g. Acme Inc.)</li>
-        <li><strong>Company Slug</strong> — a short URL-friendly identifier (e.g. <code>acme-corp</code>)</li>
+        <li><strong>Company Code</strong> — the code your admin gave you</li>
       </ul>
     </li>
-    <li>Click <strong>Create Account</strong></li>
+    <li>Click <strong>Create Employee Account</strong></li>
     <li>You will be logged in automatically and taken to your dashboard</li>
   </ol>
-  <div class="tip">If your admin created your account, they will give you your email and password directly. Go to https://timekeepinghub.com/#/login to sign in.</div>
+  <div class="tip">Ask your company admin for the Company Code before filling in the form. If you enter the wrong code you will see a "Company code not found" error.</div>
   <div class="screenshot">
     <img src="${img('02-register.png')}" alt="Register page"/>
-    <div class="caption">The registration page — fill in all fields and click Create Account</div>
+    <div class="caption">The registration page — enter your details and the Company Code your admin gave you</div>
   </div>
 </div>
 
@@ -159,7 +158,7 @@ const html = `<!DOCTYPE html>
     <li>A time entry panel will open</li>
     <li>Set your <strong>Start time</strong> (e.g. 09:00)</li>
     <li>Set your <strong>End time</strong> (e.g. 17:00)</li>
-    <li>Select your <strong>Break time</strong> — choose from: No break, 15 min, 30 min, 1 hr</li>
+    <li>Select your <strong>Break time</strong> — choose from: No break, 15 min, 30 min, 1 hr, or click <strong>Custom</strong> and type any number of minutes (e.g. 45, 90)</li>
     <li>Optionally add a <strong>Note</strong> (e.g. "Client meeting", "WFH")</li>
     <li>The <strong>Net worked</strong> time is calculated automatically</li>
     <li>Click <strong>Save</strong></li>
@@ -229,7 +228,7 @@ const html = `<!DOCTYPE html>
 
 <!-- FOOTER -->
 <div class="footer">
-  <strong>TimekeepingHub</strong> — Employee User Guide · Version 1.0 · May 2026<br/>
+  <strong>TimekeepingHub</strong> — Employee User Guide · Version 1.2 · May 2026<br/>
   <span style="margin-top:4px;display:block;">https://timekeepinghub.com</span>
 </div>
 
