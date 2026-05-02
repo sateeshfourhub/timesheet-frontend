@@ -37,7 +37,41 @@ You will be taken to your Weekly Timesheet dashboard.
 
 ---
 
-## 3. Logging Your Hours
+## 3. Forgot or Reset Your Password
+
+If you have forgotten your password, you can reset it by email.
+
+### Requesting a Reset Link
+
+1. On the login page, click **Forgot your password?**
+2. Enter the **email address** you registered with
+3. Click **Send Reset Link**
+4. A confirmation screen will appear — a reset link has been sent to your inbox
+
+> For security, the confirmation screen is shown regardless of whether the email address is registered. If no email arrives within a few minutes, check your spam folder and confirm you used the right address.
+
+![Forgot password form](screenshots/06-forgot-password.png)
+
+![Check your email confirmation](screenshots/07-forgot-password-sent.png)
+
+### Setting a New Password
+
+1. Open the email from TimekeepingHub and click the **Reset my password** link
+2. You will be taken to the **Set a new password** page
+3. Enter your new password (minimum 8 characters)
+4. Re-enter it in the **Confirm New Password** field
+5. Click **Set New Password**
+6. A success message will appear and you will be automatically redirected to the sign-in page after 3 seconds
+
+![Reset password form](screenshots/08-reset-password.png)
+
+![Password updated confirmation](screenshots/09-reset-password-done.png)
+
+> Reset links expire after **1 hour** and can only be used once. If your link has expired, simply request a new one from the login page.
+
+---
+
+## 4. Logging Your Hours
 
 ### Your Dashboard
 
@@ -84,7 +118,7 @@ The day card will update immediately to show your clock-in and clock-out times.
 
 ---
 
-## 4. Submitting Your Timesheet
+## 5. Submitting Your Timesheet
 
 At the end of each week, you must submit your timesheet:
 
@@ -98,7 +132,7 @@ At the end of each week, you must submit your timesheet:
 
 ---
 
-## 5. Weekly Summary
+## 6. Weekly Summary
 
 At the bottom of the dashboard you will see three summary cards:
 
@@ -110,13 +144,13 @@ At the bottom of the dashboard you will see three summary cards:
 
 ---
 
-## 6. Signing Out
+## 7. Signing Out
 
 Click your name or role badge in the top-right corner area, then click **Sign out**.
 
 ---
 
-## 7. Need Help?
+## 8. Need Help?
 
 Contact your company admin if you:
 - Cannot log in
