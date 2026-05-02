@@ -1,15 +1,18 @@
-import { useState } from 'react'
-import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { resetPassword } from '../api/auth'
 
-export default function ResetPasswordPage() {
-  const location = useLocation()
-  // Parse token from location.search, with a fallback for HashRouter environments
-  // where the query string lives inside window.location.hash
-  const rawSearch = location.search
-    || (window.location.hash.includes('?') ? '?' + window.location.hash.split('?')[1] : '')
-  const token = new URLSearchParams(rawSearch).get('token') || ''
+function getTokenFromHash() {
+  // HashRouter URLs look like: /#/reset-password?token=xxx
+  // window.location.hash = "#/reset-password?token=xxx"
+  const hash = window.location.hash
+  const qIndex = hash.indexOf('?')
+  if (qIndex === -1) return ''
+  return new URLSearchParams(hash.slice(qIndex)).get('token') || ''
+}
 
+export default function ResetPasswordPage() {
+  const token = getTokenFromHash()
   const [password, setPassword] = useState('')
   const [confirm, setConfirm]   = useState('')
   const [loading, setLoading]   = useState(false)
@@ -17,9 +20,11 @@ export default function ResetPasswordPage() {
   const [done, setDone]         = useState(false)
   const navigate = useNavigate()
 
-  if (!token) {
-    return <Navigate to="/forgot-password" replace />
-  }
+  useEffect(() => {
+    if (!token) {
+      navigate('/forgot-password', { replace: true })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -45,6 +50,18 @@ export default function ResetPasswordPage() {
   }
 
   const inputClass = "w-full border border-blue-200 rounded-lg px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all"
+
+  // While redirect is pending (no token), show the branded shell so there's no flash of white
+  if (!token) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #BFDBFE 100%)' }}
+      >
+        <p className="text-gray-400 text-sm">Redirecting…</p>
+      </div>
+    )
+  }
 
   return (
     <div
