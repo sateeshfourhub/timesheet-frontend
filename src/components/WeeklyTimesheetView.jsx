@@ -101,9 +101,12 @@ export default function WeeklyTimesheetView() {
   const { data: submissionStatus } = useQuery({
     queryKey: ['submission-status', startDate],
     queryFn: () => getSubmissionStatus(startDate),
+    refetchInterval: (query) => query.state.data?.submitted ? 15000 : false,
+    refetchOnWindowFocus: true,
   })
 
   const isSubmitted = submissionStatus?.submitted === true
+  const isDayLocked = isWeekLocked || (!isAdmin && isSubmitted)
 
   const days = getWeekDays(monday)
 
@@ -163,7 +166,12 @@ export default function WeeklyTimesheetView() {
         </button>
         <div className="text-center">
           <p className="text-sm font-semibold text-gray-900">{weekLabel}</p>
-          {isWeekLocked && (
+          {isSubmitted && !isAdmin && (
+            <p className="text-xs text-green-700 mt-0.5">
+              Submitted — contact your admin to make changes
+            </p>
+          )}
+          {isWeekLocked && !isSubmitted && (
             <p className="text-xs text-amber-600 mt-0.5">
               {weekOffset > FUTURE_WEEKS_LIMIT
                 ? `Locked — max ${FUTURE_WEEKS_LIMIT} weeks ahead allowed`
@@ -193,9 +201,9 @@ export default function WeeklyTimesheetView() {
           return (
             <button
               key={day.date}
-              onClick={() => !isWeekLocked && setSelectedDay(day)}
-              disabled={isWeekLocked}
-              className={`flex flex-col items-center gap-1 py-3 px-1 rounded-xl border transition-all ${isWeekLocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md active:scale-95'} ${
+              onClick={() => !isDayLocked && setSelectedDay(day)}
+              disabled={isDayLocked}
+              className={`flex flex-col items-center gap-1 py-3 px-1 rounded-xl border transition-all ${isDayLocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md active:scale-95'} ${
                 day.isToday
                   ? 'border-blue-200 bg-blue-50'
                   : day.isWeekend

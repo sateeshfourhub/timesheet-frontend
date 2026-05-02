@@ -4,6 +4,7 @@ import {
   listUsers, listCompanies, createUser, updateUser, batchFutureAccess,
   listInviteTokens, generateInviteToken,
 } from '../api/admin'
+import { getSubmissionStatusForUser, unlockSubmission } from '../api/timeEntries'
 import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 
@@ -373,12 +374,122 @@ function CompaniesPanel({ companies }) {
   )
 }
 
+// ── Employee timesheet / unlock modal ───────────────────────────────────────
+
+function getMonday(offset = 0) {
+  const now = new Date()
+  const day = now.getDay()
+  const monday = new Date(now)
+  monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1) + offset * 7)
+  monday.setHours(0, 0, 0, 0)
+  return monday
+}
+
+function EmployeeTimesheetModal({ employee, onClose }) {
+  const [weekOffset, setWeekOffset] = useState(0)
+  const [unlocking, setUnlocking]   = useState(false)
+  const [error, setError]           = useState('')
+  const qc = useQueryClient()
+
+  const monday   = getMonday(weekOffset)
+  const sunday   = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+  const weekStart = monday.toISOString().split('T')[0]
+  const weekLabel = `${monday.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} – ${sunday.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`
+
+  const { data: status, isLoading } = useQuery({
+    queryKey: ['submission-status-admin', employee.id, weekStart],
+    queryFn: () => getSubmissionStatusForUser(employee.id, weekStart),
+  })
+
+  const isSubmitted = status?.submitted === true
+
+  const handleUnlock = async () => {
+    setUnlocking(true)
+    setError('')
+    try {
+      await unlockSubmission(employee.id, weekStart)
+      qc.invalidateQueries({ queryKey: ['submission-status-admin', employee.id, weekStart] })
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to unlock — please try again.')
+    } finally {
+      setUnlocking(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">{employee.full_name}</h2>
+            <p className="text-xs text-gray-500 mt-0.5">Timesheet — week submission status</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none mt-0.5">✕</button>
+        </div>
+
+        {/* Week navigator */}
+        <div className="flex items-center justify-between mb-5">
+          <button
+            onClick={() => setWeekOffset(w => w - 1)}
+            className="px-3 py-1.5 rounded-lg hover:bg-gray-100 text-gray-500 text-sm transition-colors"
+          >
+            ‹ Prev
+          </button>
+          <p className="text-sm font-semibold text-gray-900 text-center">{weekLabel}</p>
+          <button
+            onClick={() => setWeekOffset(w => w + 1)}
+            disabled={weekOffset >= 0}
+            className="px-3 py-1.5 rounded-lg hover:bg-gray-100 text-gray-500 text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            Next ›
+          </button>
+        </div>
+
+        {/* Status card */}
+        {isLoading ? (
+          <div className="text-center text-gray-400 py-8 text-sm">Loading…</div>
+        ) : isSubmitted ? (
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 space-y-3">
+            <p className="text-sm font-semibold text-green-700">✓ Week Submitted</p>
+            <div className="flex items-center justify-between text-sm text-gray-600">
+              <span>Net worked: {Math.floor(status.net_minutes / 60)}h {Math.round(status.net_minutes % 60)}m</span>
+              <span>{status.days_logged} day{status.days_logged !== 1 ? 's' : ''} logged</span>
+            </div>
+            <p className="text-xs text-gray-400">
+              Submitted: {new Date(status.submitted_at).toLocaleString()}
+            </p>
+            {error && (
+              <p className="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+            )}
+            <button
+              onClick={handleUnlock}
+              disabled={unlocking}
+              className="w-full py-2 rounded-lg bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600 disabled:opacity-50 transition-colors"
+            >
+              {unlocking ? 'Unlocking…' : 'Unlock Week'}
+            </button>
+            <p className="text-xs text-gray-400 text-center">
+              Unlocking lets {employee.full_name.split(' ')[0]} edit and re-submit this week.
+            </p>
+          </div>
+        ) : (
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
+            <p className="text-sm text-gray-500">No submission for this week.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ── Main admin dashboard ─────────────────────────────────────────────────────
 
 export default function AdminDashboard() {
-  const [tab, setTab]           = useState('users')
-  const [selected, setSelected] = useState(new Set())
-  const [showAdd, setShowAdd]   = useState(false)
+  const [tab, setTab]                   = useState('users')
+  const [selected, setSelected]         = useState(new Set())
+  const [showAdd, setShowAdd]           = useState(false)
+  const [timesheetEmployee, setTimesheetEmployee] = useState(null)
   const qc = useQueryClient()
   const { user: currentUser } = useAuth()
   const isSuperuser = currentUser?.is_superuser === true
@@ -545,14 +656,22 @@ export default function AdminDashboard() {
                       />
                     </td>
                     <td className="px-4 py-3 text-right">
-                      {!user.is_superuser && (
+                      <div className="flex items-center justify-end gap-3">
                         <button
-                          onClick={() => mutUpdate.mutate({ id: user.id, data: { role: user.role === 'admin' ? 'employee' : 'admin' } })}
-                          className="text-xs text-blue-600 hover:underline"
+                          onClick={() => setTimesheetEmployee(user)}
+                          className="text-xs text-gray-500 hover:text-gray-800 hover:underline"
                         >
-                          {user.role === 'admin' ? 'Make Employee' : 'Make Admin'}
+                          Timesheets
                         </button>
-                      )}
+                        {!user.is_superuser && (
+                          <button
+                            onClick={() => mutUpdate.mutate({ id: user.id, data: { role: user.role === 'admin' ? 'employee' : 'admin' } })}
+                            className="text-xs text-blue-600 hover:underline"
+                          >
+                            {user.role === 'admin' ? 'Make Employee' : 'Make Admin'}
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -579,6 +698,14 @@ export default function AdminDashboard() {
 
       {/* ── Invite Tokens tab (superuser only) ── */}
       {tab === 'tokens' && isSuperuser && <InviteTokensPanel />}
+
+      {/* ── Employee timesheet / unlock modal ── */}
+      {timesheetEmployee && (
+        <EmployeeTimesheetModal
+          employee={timesheetEmployee}
+          onClose={() => setTimesheetEmployee(null)}
+        />
+      )}
     </Layout>
   )
 }
