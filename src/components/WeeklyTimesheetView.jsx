@@ -101,6 +101,8 @@ export default function WeeklyTimesheetView() {
   const { data: submissionStatus } = useQuery({
     queryKey: ['submission-status', startDate],
     queryFn: () => getSubmissionStatus(startDate),
+    refetchInterval: (query) => query.state.data?.submitted ? 15000 : false,
+    refetchOnWindowFocus: true,
   })
 
   const isSubmitted = submissionStatus?.submitted === true
