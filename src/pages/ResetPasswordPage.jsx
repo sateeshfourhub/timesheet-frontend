@@ -1,10 +1,14 @@
 import { useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { resetPassword } from '../api/auth'
 
 export default function ResetPasswordPage() {
-  const [searchParams] = useSearchParams()
-  const token = searchParams.get('token') || ''
+  const location = useLocation()
+  // Parse token from location.search, with a fallback for HashRouter environments
+  // where the query string lives inside window.location.hash
+  const rawSearch = location.search
+    || (window.location.hash.includes('?') ? '?' + window.location.hash.split('?')[1] : '')
+  const token = new URLSearchParams(rawSearch).get('token') || ''
 
   const [password, setPassword] = useState('')
   const [confirm, setConfirm]   = useState('')
@@ -12,6 +16,10 @@ export default function ResetPasswordPage() {
   const [error, setError]       = useState('')
   const [done, setDone]         = useState(false)
   const navigate = useNavigate()
+
+  if (!token) {
+    return <Navigate to="/forgot-password" replace />
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -54,22 +62,9 @@ export default function ResetPasswordPage() {
         </div>
 
         <div className="px-8 py-8">
-          {!token ? (
+          {done ? (
             <div className="text-center space-y-4">
-              <p className="text-sm text-red-600">
-                This reset link is invalid. Please request a new one.
-              </p>
-              <Link
-                to="/forgot-password"
-                className="block w-full text-center py-2.5 rounded-lg font-semibold text-white"
-                style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)' }}
-              >
-                Request Reset Link
-              </Link>
-            </div>
-          ) : done ? (
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto text-3xl">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto text-2xl font-bold text-green-600">
                 ✓
               </div>
               <h2 className="text-lg font-bold text-gray-900">Password updated!</h2>
