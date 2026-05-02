@@ -75,12 +75,12 @@ const html = `<!DOCTYPE html>
 
 <!-- COVER -->
 <div class="cover">
-  <div class="label">Employee Guide · v1.2</div>
+  <div class="label">Employee Guide · v1.3</div>
   <h1>TimekeepingHub<br>Employee User Guide</h1>
   <div class="sub">A step-by-step guide to creating your account, logging your hours, submitting your weekly timesheet, and getting the most out of TimekeepingHub.</div>
   <div class="meta">
     <div><strong>App URL</strong>timekeepinghub.com</div>
-    <div><strong>Version</strong>1.2 — May 2026</div>
+    <div><strong>Version</strong>1.3 — May 2026</div>
     <div><strong>Support</strong>Your company admin</div>
   </div>
 </div>
@@ -91,11 +91,12 @@ const html = `<!DOCTYPE html>
   <ul class="toc">
     <li><span class="num">1</span><span class="title">Creating Your Account</span></li>
     <li><span class="num">2</span><span class="title">Signing In</span></li>
-    <li><span class="num">3</span><span class="title">Logging Your Hours</span></li>
-    <li><span class="num">4</span><span class="title">Submitting Your Timesheet</span></li>
-    <li><span class="num">5</span><span class="title">Weekly Summary</span></li>
-    <li><span class="num">6</span><span class="title">Signing Out</span></li>
-    <li><span class="num">7</span><span class="title">Need Help?</span></li>
+    <li><span class="num">3</span><span class="title">Forgot or Reset Your Password</span></li>
+    <li><span class="num">4</span><span class="title">Logging Your Hours</span></li>
+    <li><span class="num">5</span><span class="title">Submitting Your Timesheet</span></li>
+    <li><span class="num">6</span><span class="title">Weekly Summary</span></li>
+    <li><span class="num">7</span><span class="title">Signing Out</span></li>
+    <li><span class="num">8</span><span class="title">Need Help?</span></li>
   </ul>
 </div>
 
@@ -140,7 +141,47 @@ const html = `<!DOCTYPE html>
 
 <!-- SECTION 3 -->
 <div class="page">
-  <h2 class="section"><span class="num">3</span>Logging Your Hours</h2>
+  <h2 class="section"><span class="num">3</span>Forgot or Reset Your Password</h2>
+  <p>If you have forgotten your password, you can reset it by email without contacting your admin.</p>
+  <h3>Requesting a Reset Link</h3>
+  <ol>
+    <li>On the login page, click <strong>Forgot your password?</strong></li>
+    <li>Enter the <strong>email address</strong> you registered with</li>
+    <li>Click <strong>Send Reset Link</strong></li>
+    <li>A confirmation screen will appear — a reset link has been sent to your inbox</li>
+  </ol>
+  <div class="tip">For security, the confirmation screen is shown regardless of whether the email address is registered. If no email arrives within a few minutes, check your spam folder and confirm you used the right address.</div>
+  <div class="screenshot">
+    <img src="${img('06-forgot-password.png')}" alt="Forgot password form"/>
+    <div class="caption">The forgot password page — enter your email address and click Send Reset Link</div>
+  </div>
+  <div class="screenshot">
+    <img src="${img('07-forgot-password-sent.png')}" alt="Check your email confirmation"/>
+    <div class="caption">Confirmation screen — a reset link has been sent to your inbox</div>
+  </div>
+  <h3>Setting a New Password</h3>
+  <ol>
+    <li>Open the email from TimekeepingHub and click the <strong>Reset my password</strong> link</li>
+    <li>You will be taken to the <strong>Set a new password</strong> page</li>
+    <li>Enter your new password — <strong>minimum 8 characters</strong></li>
+    <li>Re-enter it in the <strong>Confirm New Password</strong> field</li>
+    <li>Click <strong>Set New Password</strong></li>
+    <li>A success message will appear and you will be redirected to the sign-in page automatically</li>
+  </ol>
+  <div class="warn">Reset links expire after <strong>1 hour</strong> and can only be used once. If your link has expired, simply request a new one from the login page.</div>
+  <div class="screenshot">
+    <img src="${img('08-reset-password.png')}" alt="Reset password form"/>
+    <div class="caption">The reset password page — enter and confirm your new password</div>
+  </div>
+  <div class="screenshot">
+    <img src="${img('09-reset-password-done.png')}" alt="Password updated confirmation"/>
+    <div class="caption">Password updated — you will be redirected to the sign-in page in 3 seconds</div>
+  </div>
+</div>
+
+<!-- SECTION 4 -->
+<div class="page">
+  <h2 class="section"><span class="num">4</span>Logging Your Hours</h2>
   <h3>Your Dashboard</h3>
   <p>After signing in you will see the <strong>Weekly Timesheet</strong> screen. It shows the current week with 7 day cards (Mon–Sun) across the top.</p>
   <ul>
@@ -183,9 +224,9 @@ const html = `<!DOCTYPE html>
   </ul>
 </div>
 
-<!-- SECTION 4 -->
+<!-- SECTION 5 -->
 <div class="page">
-  <h2 class="section"><span class="num">4</span>Submitting Your Timesheet</h2>
+  <h2 class="section"><span class="num">5</span>Submitting Your Timesheet</h2>
   <p>At the end of each week, you must submit your timesheet:</p>
   <ol>
     <li>Make sure you have logged hours for all your working days</li>
@@ -197,9 +238,9 @@ const html = `<!DOCTYPE html>
   <div class="warn">Submit your timesheet every week. Once submitted it cannot be changed.</div>
 </div>
 
-<!-- SECTION 5 -->
+<!-- SECTION 6 -->
 <div class="page">
-  <h2 class="section"><span class="num">5</span>Weekly Summary</h2>
+  <h2 class="section"><span class="num">6</span>Weekly Summary</h2>
   <p>At the bottom of the dashboard you will see three summary cards:</p>
   <table>
     <tr><th>Card</th><th>What it means</th></tr>
@@ -209,15 +250,15 @@ const html = `<!DOCTYPE html>
   </table>
 </div>
 
-<!-- SECTION 6 -->
+<!-- SECTION 7 -->
 <div class="page">
-  <h2 class="section"><span class="num">6</span>Signing Out</h2>
+  <h2 class="section"><span class="num">7</span>Signing Out</h2>
   <p>Click your name or role badge in the top-right corner of the screen, then click <strong>Sign out</strong>.</p>
 </div>
 
-<!-- SECTION 7 -->
+<!-- SECTION 8 -->
 <div class="page">
-  <h2 class="section"><span class="num">7</span>Need Help?</h2>
+  <h2 class="section"><span class="num">8</span>Need Help?</h2>
   <p>Contact your company admin if you:</p>
   <ul>
     <li>Cannot log in</li>
@@ -228,7 +269,7 @@ const html = `<!DOCTYPE html>
 
 <!-- FOOTER -->
 <div class="footer">
-  <strong>TimekeepingHub</strong> — Employee User Guide · Version 1.2 · May 2026<br/>
+  <strong>TimekeepingHub</strong> — Employee User Guide · Version 1.3 · May 2026<br/>
   <span style="margin-top:4px;display:block;">https://timekeepinghub.com</span>
 </div>
 

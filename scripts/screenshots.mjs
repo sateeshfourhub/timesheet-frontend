@@ -40,6 +40,10 @@ page.on('request', (req) => {
     req.respond({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_ENTRIES) })
   } else if (url.includes('/timesheets/submission-status')) {
     req.respond({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_SUBMIT) })
+  } else if (url.includes('/auth/forgot-password')) {
+    req.respond({ status: 204, contentType: 'application/json', body: '' })
+  } else if (url.includes('/auth/reset-password')) {
+    req.respond({ status: 204, contentType: 'application/json', body: '' })
   } else if (url.includes('/admin/users')) {
     req.respond({ status: 200, contentType: 'application/json', body: JSON.stringify([
       { id: '1', full_name: 'Alice Johnson', email: 'alice@acmecorp.com', role: 'admin', is_superuser: false, is_active: true, future_time_log_enabled: false, company_name: 'Acme Corp' },
@@ -93,6 +97,40 @@ for (const btn of days) {
 await page.goto(`${LOCAL}/admin`, { waitUntil: 'networkidle0' })
 await wait(2000)
 await shot('05-admin-dashboard')
+
+// 6. Forgot password — empty form
+await page.goto(`${LOCAL}/#/forgot-password`, { waitUntil: 'networkidle0' })
+await page.waitForSelector('input[type="email"]', { timeout: 5000 })
+await wait(600)
+await shot('06-forgot-password')
+
+// 7. Forgot password — sent confirmation
+await page.goto(`${LOCAL}/#/forgot-password`, { waitUntil: 'networkidle0' })
+await page.waitForSelector('input[type="email"]', { timeout: 5000 })
+await wait(300)
+await page.type('input[type="email"]', 'john@acmecorp.com')
+await wait(200)
+await page.click('button[type="submit"]')
+await wait(1800)
+await shot('07-forgot-password-sent')
+
+// 8. Reset password — form (HashRouter: token goes in hash query)
+await page.goto(`${LOCAL}/#/reset-password?token=FAKE_SCREENSHOT_TOKEN`, { waitUntil: 'networkidle0' })
+await page.waitForSelector('input[type="password"]', { timeout: 5000 })
+await wait(600)
+await shot('08-reset-password')
+
+// 9. Reset password — success state
+await page.goto(`${LOCAL}/#/reset-password?token=FAKE_SCREENSHOT_TOKEN`, { waitUntil: 'networkidle0' })
+await page.waitForSelector('input[type="password"]', { timeout: 5000 })
+await wait(300)
+const pwInputs = await page.$$('input[type="password"]')
+await pwInputs[0].type('NewPassword123')
+await pwInputs[1].type('NewPassword123')
+await wait(200)
+await page.click('button[type="submit"]')
+await wait(2000)
+await shot('09-reset-password-done')
 
 await browser.close()
 console.log('\nAll screenshots saved to docs/screenshots/')
