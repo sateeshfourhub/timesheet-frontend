@@ -4,16 +4,24 @@
 
 ---
 
-## 1. Getting Access
+## 1. Creating Your Account
 
-Your company admin creates your account and gives you two things:
+Your company admin will give you a **Company Code** — a short identifier unique to your organisation (e.g. `fourhub-technologies`).
 
-- Your **email address** (used to log in)
-- Your **password**
+Once you have the code:
 
-Once you have those, go to **https://timekeepinghub.com/#/login** to sign in. You do not need to register — your admin handles that.
+1. Go to **https://timekeepinghub.com/#/register**
+2. Fill in:
+   - **Your Full Name**
+   - **Email** — your work email address
+   - **Password** — choose a strong password
+   - **Company Code** — the code your admin gave you
+3. Click **Create Employee Account**
+4. You will be logged in automatically and taken to your dashboard
 
-> If you haven't received your login details, contact your company admin.
+> Ask your company admin for the Company Code before filling in the registration form. If you enter the wrong code you will see a "Company code not found" error.
+
+![Register page](screenshots/02-register.png)
 
 ---
 
@@ -52,6 +60,7 @@ After signing in you will see the **Weekly Timesheet** screen. It shows the curr
    - 15 min
    - 30 min
    - 1 hr
+   - **Custom** — click the Custom pill and type any number of minutes (e.g. 45, 90)
 6. Optionally add a **Note** (e.g. "Client meeting", "WFH")
 7. The **Net worked** time is calculated automatically
 8. Click **Save**

@@ -7,6 +7,9 @@ import {
 import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 
+const toSlug = (name) =>
+  name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') ?? ''
+
 // ── Shared small components ──────────────────────────────────────────────────
 
 function RoleBadge({ role }) {
@@ -319,6 +322,57 @@ function InviteTokensPanel() {
   )
 }
 
+// ── Companies panel (superuser only) ────────────────────────────────────────
+
+function CompaniesPanel({ companies }) {
+  if (companies.length === 0) {
+    return (
+      <div className="text-center text-gray-400 text-sm py-12">No companies found.</div>
+    )
+  }
+
+  return (
+    <>
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-gray-900">All Companies</h2>
+        <p className="text-sm text-gray-500 mt-0.5">
+          Company codes are what admins share with their employees to register. Use this to help an admin who has lost their code.
+        </p>
+      </div>
+
+      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-100 bg-gray-50">
+              <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">Company Name</th>
+              <th className="text-left text-xs font-semibold text-gray-500 px-4 py-3">Company Code</th>
+              <th className="text-right text-xs font-semibold text-gray-500 px-4 py-3">Copy</th>
+            </tr>
+          </thead>
+          <tbody>
+            {companies.map((c) => {
+              const code = toSlug(c.name)
+              return (
+                <tr key={c.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{c.name}</td>
+                  <td className="px-4 py-3">
+                    <span className="font-mono text-sm text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg">
+                      {code}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <CopyButton text={code} />
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )
+}
+
 // ── Main admin dashboard ─────────────────────────────────────────────────────
 
 export default function AdminDashboard() {
@@ -363,10 +417,29 @@ export default function AdminDashboard() {
       {/* Page header + tabs */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+
+        {/* Company code banner — visible to company admins */}
+        {!isSuperuser && currentUser?.company_name && (
+          <div className="mt-4 flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider mb-0.5">Your Company Code</p>
+              <p className="font-mono text-blue-800 font-bold text-sm truncate">{toSlug(currentUser.company_name)}</p>
+            </div>
+            <div className="flex-shrink-0 flex flex-col items-end gap-1">
+              <CopyButton text={toSlug(currentUser.company_name)} />
+              <p className="text-xs text-blue-400">Share with employees to let them register</p>
+            </div>
+          </div>
+        )}
+
+
         <div className="flex gap-1 mt-4 border-b border-gray-200">
           {[
             { id: 'users', label: 'Team Members' },
-            ...(isSuperuser ? [{ id: 'tokens', label: 'Invite Tokens' }] : []),
+            ...(isSuperuser ? [
+              { id: 'companies', label: 'Companies' },
+              { id: 'tokens', label: 'Invite Tokens' },
+            ] : []),
           ].map(t => (
             <button
               key={t.id}
@@ -500,6 +573,9 @@ export default function AdminDashboard() {
           )}
         </>
       )}
+
+      {/* ── Companies tab (superuser only) ── */}
+      {tab === 'companies' && isSuperuser && <CompaniesPanel companies={companies} />}
 
       {/* ── Invite Tokens tab (superuser only) ── */}
       {tab === 'tokens' && isSuperuser && <InviteTokensPanel />}
