@@ -15,8 +15,8 @@ export default function ForgotPasswordPage() {
     try {
       await forgotPassword(email)
       setSent(true)
-    } catch {
-      setError('Something went wrong. Please try again.')
+    } catch (err) {
+      setError(err.response?.data?.detail || err.message || 'Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }
